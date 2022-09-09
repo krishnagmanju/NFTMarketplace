@@ -2,22 +2,31 @@
 
 pragma solidity >=0.8.0 <0.9.0;
 
+
+import "./IERC20.sol";
+import "./NftToken.sol";
+
 contract NftMarketplace {
     struct NftMarket {
         address owners;
         bool isForSelling;
     }
+    
+    NftToken public token;
+    Tokentransfer xnfttoken;
 
     event payout(address recipient, uint256 amount);
 
     address public admin;
     uint256 public servicefeepercentage;
-
+    
     mapping(uint256 => NftMarket) public Nfts;
 
-    constructor(uint256 _servicefeepercentage) {
+    constructor(uint256 _servicefeepercentage,address erc20) {
         admin = msg.sender;
         servicefeepercentage = _servicefeepercentage;
+        xnfttoken= Tokentransfer(erc20);
+        
     }
 
     function createNFT(uint256 tokenId, bool isForSelling) public {
@@ -35,10 +44,14 @@ contract NftMarketplace {
         Nfts[_tokenId].isForSelling = true;
     }
 
-    function buyNFT(uint256 _tokenId) public payable {
+    function buyNFT(uint256 _tokenId,uint256 _currency) public payable {
         require(Nfts[_tokenId].owners != address(0), "token doesnt exist");
         require(Nfts[_tokenId].isForSelling == true, "Not for sale");
 
+        if (_currency== msg.value) {
+            require(msg.value!=0,"no value");
+           // require(msg.value <= balanceOf(msg.sender),"insufficient balance");
+            
         uint256 adminamount = (msg.value * servicefeepercentage) / (100);
         uint256 owneramount = msg.value - adminamount;
 
@@ -49,5 +62,10 @@ contract NftMarketplace {
 
         Nfts[_tokenId].owners = msg.sender;
         Nfts[_tokenId].isForSelling = false; 
+        } else{
+            xnfttoken.Tokentransfer (msg.sender,address to, uint256 amount);
+        
+             }
+
+
     }
-}
