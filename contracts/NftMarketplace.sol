@@ -63,7 +63,7 @@ contract NftMarketplace {
         Nfts[_tokenId].owners = msg.sender;
         Nfts[_tokenId].isForSelling = false; 
         } else{
-            xnfttoken.Tokentransfer (msg.sender,address to, uint256 amount);
+            xnfttoken.transferToken(address from ,address to, uint256 amount);
         
              }
 
