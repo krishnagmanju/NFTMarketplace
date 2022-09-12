@@ -57,6 +57,7 @@ describe("nftMarketplace", function () {
             const buyNFT = await contract.connect(owner2).buyNFT(4);
             await buyNFT.wait();
             expect(await contract.ownerOfNFT(4)).to.equal(owner2.address)
+            
         });
     });
 
