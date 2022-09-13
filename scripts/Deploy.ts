@@ -1,27 +1,28 @@
 
 import { ethers } from "hardhat";
 
-
+// async function deployerc20(){
+//   const NftToken = await ethers.getContractFactory("NftToken");
+//   const nftToken = await NftToken.deploy();
+//   await nftToken.deployed();
+//   console.log('ERC20 deployed',nftToken.address);
+// }
   async function deployNftMarketplace() {
-    
-    const NftMarketplace = await ethers.getContractFactory("NftMarketplace");
-    const nftMarketplace = await NftMarketplace.deploy(10,);
 
-    await nftMarketplace.deployed();
-    console.log('NftMarketplace deployed', nftMarketplace.address);
+  const NftToken = await ethers.getContractFactory("NftToken");
+  const nftToken = await NftToken.deploy();
+  await nftToken.deployed();  
+  console.log('ERC20 deployed',nftToken.address);
+
+  const NftMarketplace = await ethers.getContractFactory("NftMarketplace");
+  const nftMarketplace = await NftMarketplace.deploy(10,nftToken.address);
+
+  await nftMarketplace.deployed();
+  console.log('NftMarketplace deployed', nftMarketplace.address);
   }
 
-  async function deployerc20(){
-    const NftToken = await ethers.getContractFactory("NftToken");
-    const nftToken = await NftToken.deploy();
-
-    await nftToken.deployed();
-    console.log('ERC20 deployed',nftToken.address);
- }
-    
 async function main() {
-  await deployNftMarketplace()
-  await deployerc20()
+await deployNftMarketplace()
 }
 
 main().catch((error) => {

@@ -49,7 +49,6 @@ contract NftMarketplace {
         if (keccak256(abi.encodePacked(currency)) == keccak256(abi.encodePacked("Ether"))) {
             require(msg.value!=0,"no value");
           
-            
         uint256 adminamount = (msg.value * servicefeepercentage) / (100);
         uint256 owneramount = msg.value - adminamount;
 
@@ -57,6 +56,7 @@ contract NftMarketplace {
         emit payout(admin,adminamount);
         payable(Nfts[_tokenId].owners).transfer(owneramount);
         emit payout(Nfts[_tokenId].owners,owneramount);
+
 
         Nfts[_tokenId].owners = msg.sender;
         Nfts[_tokenId].isForSelling = false; 
