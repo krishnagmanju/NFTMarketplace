@@ -1,37 +1,44 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { NftToken } from "../typechain-types";
+import { NftMarketplace,NftToken } from "../typechain-types";
 
 describe("NftToken", function () {
-    let contract:NftToken ;
+    let nftMarketplace: NftMarketplace;
+    let nfttoken:NftToken;
     let admin: SignerWithAddress;
     let owner1: SignerWithAddress;
     let owner2:SignerWithAddress;
 
-    //contract deployment
+    //nfttoken deployment
     before(async () => {
         [admin,owner1,owner2] = await ethers.getSigners();
-
         const NftToken = await ethers.getContractFactory("NftToken");
-        contract = await NftToken.deploy();
+        nfttoken=await NftToken.deploy();
+
+        const NftMarketplace = await ethers.getContractFactory("NftMarketplace");
+        nftMarketplace = await NftMarketplace.connect(admin).deploy(10,nfttoken.address);
+
+
+
+
     });
 
     describe("mint", async () => {
         it("mintingToken from admin account", async () => {
-            await contract.deployed();
-            const mintToken = await contract.connect(admin).mint(admin.address,500);
+            await nfttoken.deployed();
+            const mintToken = await nfttoken.connect(admin).mint(admin.address,500);
             await mintToken.wait();
             
-            expect(await contract.totalSupply()).to.equal(500)
+            expect(await nfttoken.totalSupply()).to.equal(500)
         });
 
         it("checking only admin can mint",async () => {
-            await contract.deployed();
-            // const mintToken = await contract.connect(owner1).mint(owner1.address,100);
+            await nfttoken.deployed();
+            // const mintToken = await nfttoken.connect(owner1).mint(owner1.address,100);
             // await mintToken.wait();
-            //await contract.connect(owner1).mint(owner1.address,100)
-            await expect(contract.connect(owner1).mint(owner1.address,100)).to.be.revertedWith('is not admin');
+            //await nfttoken.connect(owner1).mint(owner1.address,100)
+            await expect(nfttoken.connect(owner1).mint(owner1.address,100)).to.be.revertedWith('is not admin');
 
         });
 
@@ -39,39 +46,36 @@ describe("NftToken", function () {
 
     describe("burn", async () => {
         it("burnToken from admin account", async () => {
-            await contract.deployed();
-            const burnToken = await contract.connect(admin).burn(admin.address,5);
+            await nfttoken.deployed();
+            const burnToken = await nfttoken.connect(admin).burn(admin.address,5);
             await burnToken.wait();
             
-            expect(await contract.totalSupply()).to.equal(495)
+            expect(await nfttoken.totalSupply()).to.equal(495)
         });
 
         it("checking only admin can burn",async () => {
-            await contract.deployed();
-            // const burnToken = await contract.connect(owner1).burn(owner1.address,495);
-            // await burnToken.wait();
-            await expect(contract.connect(owner1).burn(owner1.address,100)).to.be.revertedWith('is not admin');
+            await nfttoken.deployed();
+            await expect(nfttoken.connect(owner1).burn(owner1.address,100)).to.be.revertedWith('is not admin');
             
 
-            
         });
 
     }); 
 
     describe("transfer", async () => {
         it("transfer without approval", async () => {
-            await contract.deployed();
+            await nfttoken.deployed();
 
-            const mintToken = await contract.connect(admin).mint(owner1.address,500);
+            const mintToken = await nfttoken.connect(admin).mint(owner1.address,500);
             await mintToken.wait();
             
-            let beforeTransferOwner1 = Number(await contract.balanceOf(owner1.address));
-            let beforeTransferOwner2= Number(await contract.balanceOf(owner2.address));
-            const transfer = await contract.connect(admin).transferToken(owner1.address,owner2.address,100);
+            let beforeTransferOwner1 = Number(await nfttoken.balanceOf(owner1.address));
+            let beforeTransferOwner2= Number(await nfttoken.balanceOf(owner2.address));
+            const transfer = await nfttoken.connect(admin).transferToken(owner1.address,owner2.address,100);
             await transfer.wait();
 
-            let afterTransferOwner1=Number(await contract.balanceOf(owner1.address));
-            let afterTransferOwner2=Number(await contract.balanceOf(owner2.address));
+            let afterTransferOwner1=Number(await nfttoken.balanceOf(owner1.address));
+            let afterTransferOwner2=Number(await nfttoken.balanceOf(owner2.address));
 
             
             expect(beforeTransferOwner1-afterTransferOwner1).to.equal(afterTransferOwner2-beforeTransferOwner2)
@@ -79,5 +83,6 @@ describe("NftToken", function () {
         });
 
     });    
+
 })
 
