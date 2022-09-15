@@ -72,11 +72,7 @@ contract NftMarketplace {
                 Nfts[_tokenId].price <= xnfttoken.balanceOf(msg.sender),
                 "Insufficient balance"
             );
-            require(
-                xnfttoken.allowance(msg.sender, address(this)) >=
-                    Nfts[_tokenId].price,
-                "insufficient allowance"
-            );
+           
             uint256 adminamount = (Nfts[_tokenId].price *
                 servicefeepercentage) / (100);
             uint256 owneramount = Nfts[_tokenId].price - adminamount;

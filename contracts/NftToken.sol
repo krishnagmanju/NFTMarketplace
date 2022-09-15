@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract NftToken is ERC20 {
     address admin;
-
+    address nftMarketplace;
 
     
     modifier onlyAdmin() {
@@ -15,6 +15,10 @@ contract NftToken is ERC20 {
     }
     constructor () ERC20("myToken","MT") {
         admin=msg.sender;
+    }
+
+    function setaddress(address nftMarketplace_ ) public {
+        nftMarketplace=nftMarketplace_;
     }
 
     function mint(address account, uint256 amount) public onlyAdmin {
@@ -26,7 +30,8 @@ contract NftToken is ERC20 {
         _burn(account, amount);
     }
 
-    function transferToken (address from,address to, uint256 amount) public onlyAdmin {
+    function transferToken (address from,address to, uint256 amount) public  {
+        require(msg.sender == nftMarketplace,"not nftmarketplace");
         _transfer(from,to,amount);
         
     }

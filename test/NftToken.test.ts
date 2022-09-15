@@ -1,28 +1,25 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { NftMarketplace,NftToken } from "../typechain-types";
+import { NftToken } from "../typechain-types";
 
 describe("NftToken", function () {
-    let nftMarketplace: NftMarketplace;
     let nfttoken:NftToken;
     let admin: SignerWithAddress;
     let owner1: SignerWithAddress;
     let owner2:SignerWithAddress;
+    let nftMarketplace:SignerWithAddress;
 
     //nfttoken deployment
     before(async () => {
-        [admin,owner1,owner2] = await ethers.getSigners();
+        [admin,owner1,owner2,nftMarketplace] = await ethers.getSigners();
         const NftToken = await ethers.getContractFactory("NftToken");
         nfttoken=await NftToken.deploy();
 
-        const NftMarketplace = await ethers.getContractFactory("NftMarketplace");
-        nftMarketplace = await NftMarketplace.connect(admin).deploy(10,nfttoken.address);
+        const setaddress=await nfttoken.connect(admin).setaddress(nftMarketplace.address);
+        await setaddress.wait();
 
-
-
-
-    });
+});
 
     describe("mint", async () => {
         it("mintingToken from admin account", async () => {
@@ -71,7 +68,7 @@ describe("NftToken", function () {
             
             let beforeTransferOwner1 = Number(await nfttoken.balanceOf(owner1.address));
             let beforeTransferOwner2= Number(await nfttoken.balanceOf(owner2.address));
-            const transfer = await nfttoken.connect(admin).transferToken(owner1.address,owner2.address,100);
+            const transfer = await nfttoken.connect(nftMarketplace).transferToken(owner1.address,owner2.address,100);
             await transfer.wait();
 
             let afterTransferOwner1=Number(await nfttoken.balanceOf(owner1.address));
