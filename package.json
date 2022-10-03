@@ -21,13 +21,21 @@
     "chai": "^4.2.0",
     "ethers": "^5.4.7",
     "hardhat": "^2.10.2",
+    "hardhat-deploy": "^0.11.15",
     "hardhat-gas-reporter": "^1.0.8",
     "solidity-coverage": "^0.7.21",
-    "ts-node": ">=8.0.0",
-    "typechain": "^8.1.0",
-    "typescript": ">=4.5.0"
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4",
+    "typechain": "^8.1.0"
+    
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.7.3"
+    "@nomiclabs/hardhat-etherscan": "^3.0.3",
+    "@typechain/ethers-v5": "^10.0.0",
+    "@typechain/hardhat": "^6.0.0",
+    "@openzeppelin/contracts": "^4.7.3",
+    "dotenv": "^16.0.3",
+    "@openzeppelin/contracts-upgradeable": "^4.3.2",
+    "@openzeppelin/hardhat-upgrades": "^1.21.0"
   }
 }
