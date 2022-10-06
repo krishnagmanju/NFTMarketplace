@@ -2,9 +2,13 @@
 
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+
+
 import "./IERC20.sol";
 
-contract NftMarketplace {
+
+contract NftMarketplace is Initializable{
     struct NftMarket {
         address owners;
         bool isForSelling;
@@ -21,7 +25,14 @@ contract NftMarketplace {
     mapping(uint256 => NftMarket) public Nfts;
     mapping(uint256 => uint256) public TokenIdtoPrice;
 
-    constructor(uint256 _servicefeepercentage, address erc20) {
+     constructor(uint256 _servicefeepercentage, address erc20) {
+        admin = msg.sender;
+        servicefeepercentage = _servicefeepercentage;
+        xnfttoken = Tokentransfer(erc20);
+    }
+
+
+    function initialize (uint256 _servicefeepercentage, address erc20)  public initializer {
         admin = msg.sender;
         servicefeepercentage = _servicefeepercentage;
         xnfttoken = Tokentransfer(erc20);
@@ -40,12 +51,12 @@ contract NftMarketplace {
     //     return Nfts[_tokenId].owners;
     // }
 
-    // function putForSale(uint256 _tokenId, uint256 price) public {
-    //     require(Nfts[_tokenId].isForSelling == false, "already for sale");
-    //     Nfts[_tokenId].isForSelling = true;
-    //     TokenIdtoPrice[_tokenId] = price;
-    //     require(price != 0, "price not assigned");
-    // }
+    function putForSale(uint256 _tokenId, uint256 price) public {
+        require(Nfts[_tokenId].isForSelling == false, "already for sale");
+        Nfts[_tokenId].isForSelling = true;
+        TokenIdtoPrice[_tokenId] = price;
+        require(price != 0, "price not assigned");
+    }
 
     function buyNFT(uint256 _tokenId, string calldata currency) public payable {
         require(Nfts[_tokenId].owners != address(0), "token doesnt exist");

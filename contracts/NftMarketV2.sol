@@ -2,9 +2,10 @@
 
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./IERC20.sol";
 
-contract NftMarketV2 {
+contract NftMarketV2  is Initializable {
     struct NftMarket {
         address owners;
         bool isForSelling;
@@ -21,12 +22,17 @@ contract NftMarketV2 {
     mapping(uint256 => NftMarket) public Nfts;
     mapping(uint256 => uint256) public TokenIdtoPrice;
 
-    constructor(uint256 _servicefeepercentage, address erc20) {
+     constructor(uint256 _servicefeepercentage, address erc20) {
         admin = msg.sender;
         servicefeepercentage = _servicefeepercentage;
         xnfttoken = Tokentransfer(erc20);
     }
 
+    function initialize (uint256 _servicefeepercentage, address erc20)  public initializer {
+        admin = msg.sender;
+        servicefeepercentage = _servicefeepercentage;
+        xnfttoken = Tokentransfer(erc20);
+    }
 
     function createNFT(
         uint256 tokenId,

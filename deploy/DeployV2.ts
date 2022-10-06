@@ -17,13 +17,13 @@ const nftToken= await deploy('NftToken', {
     log: true,
   });
 
-  if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-    const delay = (ms:number) => new Promise((resolve) => setTimeout(resolve, ms));
-    await delay(60000);
-    log("Verifying...")
-    await verify(nftToken.address, [])
+  // if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+  //   const delay = (ms:number) => new Promise((resolve) => setTimeout(resolve, ms));
+  //   await delay(60000);
+  //   log("Verifying...")
+  //   await verify(nftToken.address, [])
 
-  }
+  // }
 
 const nftMarketV2= await deploy('NftMarketV2', {
     from: deployer,
@@ -31,13 +31,13 @@ const nftMarketV2= await deploy('NftMarketV2', {
     log: true,
   });
  // Verify the deployment
- if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-  const delay = (ms:number) => new Promise((resolve) => setTimeout(resolve, ms));
-  await delay(60000);
-  log("Verifying...")
-  await verify(nftMarketV2.address, [10,nftToken.address])
+//  if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+//   const delay = (ms:number) => new Promise((resolve) => setTimeout(resolve, ms));
+//   await delay(60000);
+//   log("Verifying...")
+//   await verify(nftMarketV2.address, [10,nftToken.address])
  
-}
+// }
   
 };
-// export default func;
+export default func;
